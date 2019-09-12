@@ -1,26 +1,26 @@
 export default class Timer {
   public lastUpdate: number = null;
   public isRunning: boolean = false;
+  public loop = () => {
+    this._loop();
+  };
 
   constructor(public callback: () => void, public delay: number) {
-    this.loop();
+    requestAnimationFrame(this.loop);
   }
 
-  private loop() {
-    requestAnimationFrame(() => {
-      var now = Date.now();
-      if (!this.isRunning) {
-        this.lastUpdate = now;
-        this.loop();
-      } else {
-        var elapsed = now - this.lastUpdate;
-        if (this.lastUpdate === null || elapsed > this.delay) {
-          this.callback();
-          this.lastUpdate = now - (elapsed % this.delay);
-        }
-        this.loop();
+  private _loop() {
+    var now = Date.now();
+    if (!this.isRunning) {
+      this.lastUpdate = now;
+    } else {
+      var elapsed = now - this.lastUpdate;
+      if (this.lastUpdate === null || elapsed > this.delay) {
+        this.callback();
+        this.lastUpdate = now - (elapsed % this.delay);
       }
-    });
+    }
+    requestAnimationFrame(this.loop);
   }
 
   public start() {
