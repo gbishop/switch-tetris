@@ -1,6 +1,11 @@
 import Grid from "./grid.js";
 import Piece from "./piece.js";
 
+interface ScoredPiece {
+  piece: Piece;
+  score: number;
+}
+
 export default class AI {
   constructor(
     public heightWeight: number,
@@ -13,25 +18,24 @@ export default class AI {
     grid: Grid,
     workingPieces: Piece[],
     workingPieceIndex: number
-  ): { piece: Piece; score: number } {
-    var best: Piece = null;
-    var bestScore = null;
+  ): ScoredPiece[] {
+    let scoredPieces: ScoredPiece[] = [];
     var workingPiece = workingPieces[workingPieceIndex];
 
     for (var rotation = 0; rotation < 4; rotation++) {
-      var _piece = workingPiece.clone();
+      var piece = workingPiece.clone();
       for (var i = 0; i < rotation; i++) {
-        _piece.rotate(grid);
+        piece.rotate(grid);
       }
 
-      while (_piece.moveLeft(grid));
+      while (piece.moveLeft(grid));
 
-      while (grid.valid(_piece)) {
-        var _pieceSet = _piece.clone();
-        while (_pieceSet.moveDown(grid));
+      while (grid.valid(piece)) {
+        var pieceSet = piece.clone();
+        while (pieceSet.moveDown(grid));
 
         var _grid = grid.clone();
-        _grid.addPiece(_pieceSet);
+        _grid.addPiece(pieceSet);
 
         var score = null;
         if (workingPieceIndex == workingPieces.length - 1) {
@@ -41,22 +45,21 @@ export default class AI {
             this.holesWeight * _grid.holes() -
             this.bumpinessWeight * _grid.bumpiness();
         } else {
-          score = this._best(_grid, workingPieces, workingPieceIndex + 1).score;
+          score = this._best(_grid, workingPieces, workingPieceIndex + 1)[0]
+            .score;
         }
 
-        if (score > bestScore || bestScore == null) {
-          bestScore = score;
-          best = _piece.clone();
-        }
+        scoredPieces.push({ piece: piece.clone(), score });
 
-        _piece.column++;
+        piece.column++;
       }
     }
 
-    return { piece: best, score: bestScore };
+    return scoredPieces.sort((a, b) => b.score - a.score);
   }
 
   public best(grid: Grid, workingPieces: Piece[]) {
-    return this._best(grid, workingPieces, 0).piece;
+    var b = this._best(grid, workingPieces, 0);
+    return b[0].piece;
   }
 }
