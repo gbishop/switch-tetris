@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "./js",
+    "allowJs": true,
+    "target": "es2019",
+    "noImplicitAny": true
+  },
+  "include": ["./ts/*"]
+}

@@ -1,4 +1,11 @@
-function Grid(rows, columns){
+import Piece from "./piece";
+
+export default class  Grid {
+public rows: number;
+public columns: number;
+public cells: number[][];
+
+constructor (rows: number, columns: number){
     this.rows = rows;
     this.columns = columns;
 
@@ -11,7 +18,7 @@ function Grid(rows, columns){
     }
 };
 
-Grid.prototype.clone = function(){
+public clone (){
     var _grid = new Grid(this.rows, this.columns);
     for (var r = 0; r < this.rows; r++) {
         for(var c = 0; c < this.columns; c++){
@@ -21,7 +28,7 @@ Grid.prototype.clone = function(){
     return _grid;
 };
 
-Grid.prototype.clearLines = function(){
+public clearLines (){
     var distance = 0;
     var row = new Array(this.columns);
     for(var r = this.rows - 1; r >= 0; r--){
@@ -40,7 +47,7 @@ Grid.prototype.clearLines = function(){
     return distance;
 };
 
-Grid.prototype.isLine = function(row){
+public isLine (row: number){
     for(var c = 0; c < this.columns; c++){
         if (this.cells[row][c] == 0){
             return false;
@@ -49,7 +56,7 @@ Grid.prototype.isLine = function(row){
     return true;
 };
 
-Grid.prototype.isEmptyRow = function(row){
+public isEmptyRow (row: number){
     for(var c = 0; c < this.columns; c++){
         if (this.cells[row][c] != 0){
             return false;
@@ -58,17 +65,17 @@ Grid.prototype.isEmptyRow = function(row){
     return true;
 };
 
-Grid.prototype.exceeded = function(){
+public exceeded (){
     return !this.isEmptyRow(0) || !this.isEmptyRow(1);
 };
 
-Grid.prototype.height = function(){
+public height (){
     var r = 0;
     for(; r < this.rows && this.isEmptyRow(r); r++);
     return this.rows - r;
 };
 
-Grid.prototype.lines = function(){
+public lines (){
     var count = 0;
     for(var r = 0; r < this.rows; r++){
         if (this.isLine(r)){
@@ -78,7 +85,7 @@ Grid.prototype.lines = function(){
     return count;
 };
 
-Grid.prototype.holes = function(){
+public holes (){
     var count = 0;
     for(var c = 0; c < this.columns; c++){
         var block = false;
@@ -93,7 +100,7 @@ Grid.prototype.holes = function(){
     return count;
 };
 
-Grid.prototype.blockades = function(){
+public blockades (){
     var count = 0;
     for(var c = 0; c < this.columns; c++){
         var hole = false;
@@ -108,7 +115,7 @@ Grid.prototype.blockades = function(){
     return count;
 }
 
-Grid.prototype.aggregateHeight = function(){
+public aggregateHeight (){
     var total = 0;
     for(var c = 0; c < this.columns; c++){
         total += this.columnHeight(c);
@@ -116,7 +123,7 @@ Grid.prototype.aggregateHeight = function(){
     return total;
 };
 
-Grid.prototype.bumpiness = function(){
+public bumpiness (){
     var total = 0;
     for(var c = 0; c < this.columns - 1; c++){
         total += Math.abs(this.columnHeight(c) - this.columnHeight(c+ 1));
@@ -124,13 +131,13 @@ Grid.prototype.bumpiness = function(){
     return total;
 }
 
-Grid.prototype.columnHeight = function(column){
+public columnHeight (column: number){
     var r = 0;
     for(; r < this.rows && this.cells[r][column] == 0; r++);
     return this.rows - r;
 };
 
-Grid.prototype.addPiece = function(piece) {
+public addPiece (piece: Piece) {
     for(var r = 0; r < piece.cells.length; r++) {
         for (var c = 0; c < piece.cells[r].length; c++) {
             var _r = piece.row + r;
@@ -142,7 +149,7 @@ Grid.prototype.addPiece = function(piece) {
     }
 };
 
-Grid.prototype.valid = function(piece){
+public valid (piece: Piece){
     for(var r = 0; r < piece.cells.length; r++){
         for(var c = 0; c < piece.cells[r].length; c++){
             var _r = piece.row + r;
@@ -162,3 +169,4 @@ Grid.prototype.valid = function(piece){
     }
     return true;
 };
+}
