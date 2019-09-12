@@ -45,8 +45,8 @@ export default class AI {
             this.holesWeight * _grid.holes() -
             this.bumpinessWeight * _grid.bumpiness();
         } else {
-          score = this._best(_grid, workingPieces, workingPieceIndex + 1)[0]
-            .score;
+          let r = this._best(_grid, workingPieces, workingPieceIndex + 1);
+          score = (r.length && r[0].score) || -Infinity;
         }
 
         scoredPieces.push({ piece: piece.clone(), score });
@@ -60,6 +60,6 @@ export default class AI {
 
   public best(grid: Grid, workingPieces: Piece[]) {
     var b = this._best(grid, workingPieces, 0);
-    return b[0].piece;
+    return b[0].piece; // || b[0].piece;
   }
 }

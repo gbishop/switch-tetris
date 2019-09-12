@@ -3,26 +3,19 @@ import RandomPieceGenerator from "./random_piece_generator.js";
 import Grid from "./grid.js";
 import Piece from "./piece.js";
 import AI from "./ai.js";
-import Timer from "./timer.js";
 
 export default function GameManager() {
   const gridCanvas = <HTMLCanvasElement>document.getElementById("grid-canvas");
   const nextCanvas = <HTMLCanvasElement>document.getElementById("next-canvas");
   const scoreContainer = document.getElementById("score-container");
-  const resetButton = document.getElementById("reset-button");
-  const aiButton = document.getElementById("ai-button");
   const gridContext = gridCanvas.getContext("2d");
   const nextContext = nextCanvas.getContext("2d");
-  document.addEventListener("keydown", onKeyDown);
 
   var grid = new Grid(22, 10);
   var rpg = new RandomPieceGenerator();
   var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
   var workingPieces = [null, rpg.nextPiece()];
   var workingPiece: Piece = null;
-  var isAiActive = true;
-  var isKeyEnabled = false;
-  var gravityTimer = new Timer(onGravityTimerTick, 500);
   var score = 0;
 
   // Graphics
@@ -145,14 +138,6 @@ export default function GameManager() {
     workingPieceDropAnimationStopwatch = stopwatch;
   }
 
-  function cancelWorkingPieceDropAnimation() {
-    if (workingPieceDropAnimationStopwatch === null) {
-      return;
-    }
-    workingPieceDropAnimationStopwatch.stop();
-    workingPieceDropAnimationStopwatch = null;
-  }
-
   // Process start of turn
   function startTurn() {
     // Shift working pieces
@@ -166,21 +151,15 @@ export default function GameManager() {
     redrawGridCanvas();
     redrawNextCanvas();
 
-    if (isAiActive) {
-      isKeyEnabled = false;
-      workingPiece = ai.best(grid, workingPieces);
-      startWorkingPieceDropAnimation(function() {
-        while (workingPiece.moveDown(grid)); // Drop working piece
-        if (!endTurn()) {
-          alert("Game Over!");
-          return;
-        }
-        startTurn();
-      });
-    } else {
-      isKeyEnabled = true;
-      gravityTimer.resetForward(500);
-    }
+    workingPiece = ai.best(grid, workingPieces);
+    startWorkingPieceDropAnimation(function() {
+      while (workingPiece.moveDown(grid)); // Drop working piece
+      if (!endTurn()) {
+        alert("Game Over!");
+        return;
+      }
+      startTurn();
+    });
   }
 
   // Process end of turn
@@ -198,107 +177,5 @@ export default function GameManager() {
     return !grid.exceeded();
   }
 
-  // Process gravity tick
-  function onGravityTimerTick() {
-    // If working piece has not reached bottom
-    if (workingPiece.canMoveDown(grid)) {
-      workingPiece.moveDown(grid);
-      redrawGridCanvas();
-      return;
-    }
-
-    // Stop gravity if working piece has reached bottom
-    gravityTimer.stop();
-
-    // If working piece has reached bottom, end of turn has been processed
-    // and game cannot continue because grid has been exceeded
-    if (!endTurn()) {
-      isKeyEnabled = false;
-      alert("Game Over!");
-      return;
-    }
-
-    // If working piece has reached bottom, end of turn has been processed
-    // and game can still continue.
-    startTurn();
-  }
-
-  // Process keys
-  function onKeyDown(event: KeyboardEvent) {
-    if (!isKeyEnabled) {
-      return;
-    }
-    switch (event.which) {
-      case 32: // spacebar
-        isKeyEnabled = false;
-        gravityTimer.stop(); // Stop gravity
-        startWorkingPieceDropAnimation(function() {
-          // Start drop animation
-          while (workingPiece.moveDown(grid)); // Drop working piece
-          if (!endTurn()) {
-            alert("Game Over!");
-            return;
-          }
-          startTurn();
-        });
-        break;
-      case 40: // down
-        gravityTimer.resetForward(500);
-        break;
-      case 37: //left
-        if (workingPiece.canMoveLeft(grid)) {
-          workingPiece.moveLeft(grid);
-          redrawGridCanvas();
-        }
-        break;
-      case 39: //right
-        if (workingPiece.canMoveRight(grid)) {
-          workingPiece.moveRight(grid);
-          redrawGridCanvas();
-        }
-        break;
-      case 38: //up
-        workingPiece.rotate(grid);
-        redrawGridCanvas();
-        break;
-    }
-  }
-
-  aiButton.onclick = function() {
-    if (isAiActive) {
-      isAiActive = false;
-      aiButton.style.backgroundColor = "#f9f9f9";
-    } else {
-      isAiActive = true;
-      aiButton.style.backgroundColor = "#e9e9ff";
-
-      isKeyEnabled = false;
-      gravityTimer.stop();
-      startWorkingPieceDropAnimation(function() {
-        // Start drop animation
-        while (workingPiece.moveDown(grid)); // Drop working piece
-        if (!endTurn()) {
-          alert("Game Over!");
-          return;
-        }
-        startTurn();
-      });
-    }
-  };
-
-  resetButton.onclick = function() {
-    gravityTimer.stop();
-    cancelWorkingPieceDropAnimation();
-    grid = new Grid(22, 10);
-    rpg = new RandomPieceGenerator();
-    workingPieces = [null, rpg.nextPiece()];
-    workingPiece = null;
-    score = 0;
-    isKeyEnabled = true;
-    updateScoreContainer();
-    startTurn();
-  };
-
-  aiButton.style.backgroundColor = "#e9e9ff";
   startTurn();
 }
