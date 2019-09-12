@@ -1,6 +1,6 @@
 import AI from "./ai.js";
 import Grid from "./grid.js";
-import RandomPieceGenerator from "./random_piece_generator";
+import RandomPieceGenerator from "./random_piece_generator.js";
 
 function randomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
