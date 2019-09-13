@@ -17,6 +17,7 @@ export default function GameManager() {
   var workingPieces = [null, rpg.nextPiece()];
   var workingPiece: Piece = null;
   var score = 0;
+  let keyboardEnabled = false;
 
   // Graphics
   function intToRGBHexString(v: number) {
@@ -138,7 +139,15 @@ export default function GameManager() {
     workingPieceDropAnimationStopwatch = stopwatch;
   }
 
+  function showWorkingPiece() {
+    redrawGridCanvas(40); // draw on the 2nd row
+    keyboardEnabled = true;
+  }
+
   // Process start of turn
+  var choices: Piece[] = [];
+  var choicesIndex = 0;
+
   function startTurn() {
     // Shift working pieces
     for (var i = 0; i < workingPieces.length - 1; i++) {
@@ -151,7 +160,13 @@ export default function GameManager() {
     redrawGridCanvas();
     redrawNextCanvas();
 
-    workingPiece = ai.best(grid, workingPieces);
+    choices = ai.choices(grid, workingPieces);
+    workingPiece = choices[choicesIndex];
+    showWorkingPiece();
+  }
+
+  function finishTurn() {
+    keyboardEnabled = false;
     startWorkingPieceDropAnimation(function() {
       while (workingPiece.moveDown(grid)); // Drop working piece
       if (!endTurn()) {
@@ -178,4 +193,17 @@ export default function GameManager() {
   }
 
   startTurn();
+
+  document.addEventListener("keydown", e => {
+    console.log("down", e);
+    if (e.repeat) return;
+    if (!keyboardEnabled) return;
+    if (e.key == "ArrowRight") {
+      choicesIndex = (choicesIndex + 1) % choices.length;
+      workingPiece = choices[choicesIndex];
+      showWorkingPiece();
+    } else if (e.key == "ArrowLeft") {
+      finishTurn();
+    }
+  });
 }

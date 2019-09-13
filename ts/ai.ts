@@ -59,7 +59,12 @@ export default class AI {
   }
 
   public best(grid: Grid, workingPieces: Piece[]) {
-    var b = this._best(grid, workingPieces, 0);
-    return b[0].piece; // || b[0].piece;
+    return this._best(grid, workingPieces, 0)[0].piece;
+  }
+
+  public choices(grid: Grid, workingPieces: Piece[]) {
+    const b = this._best(grid, workingPieces, 0);
+    const c = [b[0].piece, b[b.length - 1].piece];
+    return c;
   }
 }
