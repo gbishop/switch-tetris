@@ -5,8 +5,27 @@
     <title>Tetris AI</title>
     <link href="style/main.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
+  <body class="intro">
+    <button id="next">Next</button>
+    <div class="intro">
+      <h1>Play Tetris With Switches</h1>
+      <p>Configure your switch interface to use Space/Enter or Right/Left.</p>
+      <p>
+        Choose your move with Space, Right Arrow, or by clicking the Next button
+        on the right side of the screen.
+      </p>
+      <p>
+        Drop the piece with Enter, Left Arrow, or by clicking the Drop button on
+        the left side of the screen.
+      </p>
+      <p>
+        The computer is offering the best and worst move on each turn. Learn to
+        distinguish them to get a high score.
+      </p>
+      <p>Hit any key to continue.</p>
+    </div>
     <div class="container">
+      <button id="drop">Drop</button>
       <div class="game-container">
         <canvas
           width="400px"
@@ -27,6 +46,10 @@
         </div>
       </div>
     </div>
+    <audio id="fallSound" src="sounds/fall.wav"></audio>
+    <audio id="clearSound" src="sounds/clear.wav"></audio>
+    <audio id="selectionSound" volume="0.1" src="sounds/selection.wav"></audio>
+    <audio id="gameoverSound" src="sounds/gameover.wav"></audio>
 
     <script type="module">
       import tuner from "./js/tuner.js";

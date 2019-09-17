@@ -11,13 +11,39 @@ export default function GameManager() {
   const gridContext = gridCanvas.getContext("2d");
   const nextContext = nextCanvas.getContext("2d");
 
-  var grid = new Grid(22, 10);
-  var rpg = new RandomPieceGenerator();
+  enum State {
+    intro,
+    choosing,
+    dropping,
+    endOfGame
+  }
+
+  var grid: Grid;
+  var rpg: RandomPieceGenerator;
   var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
-  var workingPieces = [null, rpg.nextPiece()];
+  var workingPieces: Piece[];
   var workingPiece: Piece = null;
   var score = 0;
-  let keyboardEnabled = false;
+  let state: State = State.intro;
+
+  function startPlaying() {
+    document.body.classList.remove("intro");
+    grid = new Grid(22, 10);
+    rpg = new RandomPieceGenerator();
+    workingPieces = [null, rpg.nextPiece()];
+    workingPiece = null;
+    score = 0;
+    updateScoreContainer();
+    startTurn();
+  }
+
+  // Sound
+  function play(sound: string): void {
+    const ae = <HTMLAudioElement>document.getElementById(sound);
+    if (ae) {
+      ae.play();
+    }
+  }
 
   // Graphics
   function intToRGBHexString(v: number) {
@@ -81,7 +107,7 @@ export default function GameManager() {
             20,
             20
           );
-          gridContext.strokeStyle = "#000000";
+          gridContext.strokeStyle = "#ffffff";
           gridContext.strokeRect(
             20 * (c + workingPiece.column),
             20 * (r + workingPiece.row - 2) + workingPieceVerticalOffset,
@@ -164,12 +190,29 @@ export default function GameManager() {
 
   function showWorkingPiece() {
     redrawGridCanvas(40); // draw on the 2nd row
-    keyboardEnabled = true;
+    state = State.choosing;
   }
 
   // Process start of turn
   var choices: Piece[] = [];
   var choicesIndex = 0;
+
+  function nextChoice() {
+    console.log("nc", state);
+    switch (state) {
+      case State.dropping:
+        return;
+      case State.intro:
+      case State.endOfGame:
+        startPlaying();
+        return;
+      case State.choosing:
+        play("selectionSound");
+        choicesIndex = (choicesIndex + 1) % choices.length;
+        workingPiece = choices[choicesIndex];
+        showWorkingPiece();
+    }
+  }
 
   function startTurn() {
     // Shift working pieces
@@ -190,15 +233,25 @@ export default function GameManager() {
   }
 
   function finishTurn() {
-    keyboardEnabled = false;
-    startWorkingPieceDropAnimation(function() {
-      while (workingPiece.moveDown(grid)); // Drop working piece
-      if (!endTurn()) {
-        alert("Game Over!");
+    switch (state) {
+      case State.intro:
+      case State.endOfGame:
+        startPlaying();
         return;
-      }
-      startTurn();
-    });
+      case State.dropping:
+        return;
+      case State.choosing:
+        state = State.dropping;
+        startWorkingPieceDropAnimation(function() {
+          while (workingPiece.moveDown(grid)); // Drop working piece
+          if (!endTurn()) {
+            gameOver();
+            return;
+          }
+          startTurn();
+        });
+        break;
+    }
   }
 
   // Process end of turn
@@ -207,7 +260,13 @@ export default function GameManager() {
     grid.addPiece(workingPiece);
 
     // Clear lines
-    score += grid.clearLines();
+    const cleared = grid.clearLines();
+    if (cleared) {
+      play("clearSound");
+    } else {
+      play("fallSound");
+    }
+    score += 10 ** cleared;
 
     // Refresh graphics
     redrawGridCanvas();
@@ -216,17 +275,37 @@ export default function GameManager() {
     return !grid.exceeded();
   }
 
-  startTurn();
+  function gameOver() {
+    play("gameoverSound");
+    state = State.endOfGame;
+    gridContext.save();
+    gridContext.translate(180, 400);
+    gridContext.rotate(Math.PI / 4);
+    gridContext.scale(10, 10);
+    gridContext.fillStyle = "#ff0000";
+    gridContext.textAlign = "center";
+    gridContext.fillText("Game Over", 0, 0);
+    gridContext.strokeStyle = "#ffffff";
+    gridContext.lineWidth = 0.1;
+    gridContext.strokeText("Game Over", 0, 0);
+    gridContext.restore();
+  }
 
   document.addEventListener("keydown", e => {
+    // ignore key repeats
     if (e.repeat) return;
-    if (!keyboardEnabled) return;
-    if (e.key == "ArrowRight") {
-      choicesIndex = (choicesIndex + 1) % choices.length;
-      workingPiece = choices[choicesIndex];
-      showWorkingPiece();
-    } else if (e.key == "ArrowLeft") {
+
+    console.log(e);
+
+    if (e.key == "ArrowRight" || e.key == " ") {
+      nextChoice();
+    } else if (e.key == "ArrowLeft" || e.key == "Enter") {
       finishTurn();
+    } else if (e.key == "q") {
+      gameOver();
     }
   });
+
+  document.getElementById("drop").addEventListener("click", finishTurn);
+  document.getElementById("next").addEventListener("click", nextChoice);
 }

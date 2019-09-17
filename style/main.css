@@ -1,11 +1,12 @@
 body {
   --bg-color: black;
   --fg-color: white;
+  --available-height: calc(100vh - 16px);
   background-color: var(--bg-color);
   margin: 8px;
   /*font-size:calc([minimumsize]+([maximumsize]-[minimumsize])*((100vw-[minimumviewportwidth])/([maximumviewportwidth]-[minimumviewportwidth])))*/
 
-  font-size: calc(16px + (64 - 16) * ((100vw - 800px) / (1980 - 800)));
+  font-size: calc(16px + (64 - 16) * ((100vmin - 800px) / (1980 - 800)));
 }
 
 .container {
@@ -20,7 +21,7 @@ body {
 
 .game-container {
   display: flex;
-  height: calc(100vh - 16px);
+  height: var(--available-height);
   justify-content: center;
 }
 
@@ -35,6 +36,7 @@ body {
 
 .controls-container {
   height: 100%;
+  font-family: monospace;
 }
 
 .score-container {
@@ -49,7 +51,7 @@ body {
 }
 
 .score-container::before {
-  content: "Lines Cleared";
+  content: "Score";
   width: 100%;
   float: right;
   color: #bbbbbb;
@@ -76,4 +78,29 @@ body {
   color: #bbbbbb;
   font-size: 1em;
   font-weight: normal;
+}
+
+button#drop {
+  display: block;
+  float: left;
+  height: var(--available-height);
+}
+
+button#next {
+  display: block;
+  float: right;
+  height: var(--available-height);
+}
+
+div.intro {
+  display: none;
+  color: var(--fg-color);
+}
+
+body.intro div.intro {
+  display: block;
+}
+
+body.intro div.container {
+  display: none;
 }
