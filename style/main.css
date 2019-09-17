@@ -1,169 +1,79 @@
-body
-{
-    background-color: #FCFCFC;
+body {
+  --bg-color: black;
+  --fg-color: white;
+  background-color: var(--bg-color);
+  margin: 8px;
+  /*font-size:calc([minimumsize]+([maximumsize]-[minimumsize])*((100vw-[minimumviewportwidth])/([maximumviewportwidth]-[minimumviewportwidth])))*/
+
+  font-size: calc(16px + (64 - 16) * ((100vw - 800px) / (1980 - 800)));
 }
 
-a
-{
-    color: #0000FF;
-    font-weight: bold;
-    text-decoration: underline;
+.container {
+  margin: 0 auto;
 }
 
-a:hover
-{
-    cursor: pointer
+.header {
+  text-align: center;
+  font-family: Verdana;
+  color: #0000ff;
 }
 
-hr
-{
-    border: none;
-    border-bottom: 1px solid #C8C8C8;
+.game-container {
+  display: flex;
+  height: calc(100vh - 16px);
+  justify-content: center;
 }
 
-.container
-{
-    width:350px;
-    margin: 0 auto;
+.grid {
+  background-color: var(--bg-color);
+  box-shadow: 0 0 10px 2px #eeeeee;
+  border: 1px solid #cccccc;
 }
 
-.header
-{
-    text-align: center;
-    font-family: Verdana;
-    color:#0000FF;
+.next-canvas {
 }
 
-.game-container
-{
-    height:400px;
-    margin-top:10px;
+.controls-container {
+  height: 100%;
 }
 
-.grid
-{
-    float:left;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 10px 2px #EEEEEE;
-    border:1px solid #CCCCCC;
+.score-container {
+  background-color: var(--bg-color);
+  box-shadow: 0 0 10px 2px #eeeeee;
+  text-align: center;
+  color: #ff0000;
+  font-size: 2em;
+  border: 1px solid #cccccc;
+  font-weight: bold;
+  padding: 5px;
 }
 
-.next-canvas
-{
+.score-container::before {
+  content: "Lines Cleared";
+  width: 100%;
+  float: right;
+  color: #bbbbbb;
+  font-size: 2rem;
+  font-weight: normal;
 }
 
-.controls-container
-{
-    width:130px;
-    float:right;
-    height:100%;
+.next-container {
+  background-color: var(--bg-color);
+  box-shadow: 0 0 10px 2px #eeeeee;
+  text-align: center;
+  color: #ff0000;
+  font-size: 1em;
+  border: 1px solid #cccccc;
+  font-weight: bold;
+  padding: 5px;
+  margin-top: 10px;
 }
 
-.score-container
-{
-    background-color: #FFFFFF;
-    box-shadow: 0 0 10px 2px #EEEEEE;
-    text-align: center;
-    color: #FF0000;
-    font-size:25px;
-    border:1px solid #CCCCCC;
-    font-weight: bold;
-    padding:5px;
-}
-
-.score-container::before
-{
-    content: "Lines Cleared";
-    width:100%;
-    float:right;
-    color: #BBBBBB;
-    font-size:15px;
-    font-weight: normal;
-}
-
-.next-container
-{
-    background-color: #FFFFFF;
-    box-shadow: 0 0 10px 2px #EEEEEE;
-    text-align: center;
-    color: #FF0000;
-    font-size:25px;
-    border:1px solid #CCCCCC;
-    font-weight: bold;
-    padding:5px;
-    margin-top: 10px;
-}
-
-.next-container::before
-{
-    content: "Next Piece";
-    width:100%;
-    float:right;
-    color: #BBBBBB;
-    font-size:15px;
-    font-weight: normal;
-}
-
-.start-ai-button, .reset-button {
-    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-    box-shadow:inset 0px 1px 0px 0px #ffffff;
-    background-color:#f9f9f9;
-    -webkit-border-top-left-radius:3px;
-    -moz-border-radius-topleft:3px;
-    border-top-left-radius:3px;
-    -webkit-border-top-right-radius:3px;
-    -moz-border-radius-topright:3px;
-    border-top-right-radius:3px;
-    -webkit-border-bottom-right-radius:3px;
-    -moz-border-radius-bottomright:3px;
-    border-bottom-right-radius:3px;
-    -webkit-border-bottom-left-radius:3px;
-    -moz-border-radius-bottomleft:3px;
-    border-bottom-left-radius:3px;
-    text-indent:0;
-    border:1px solid #dcdcdc;
-    display:inline-block;
-    color:#666666;
-    font-family:Arial;
-    font-size:15px;
-    font-weight:bold;
-    font-style:normal;
-    height:40px;
-    line-height:40px;
-    width:100%;
-    text-decoration:none;
-    text-align:center;
-    text-shadow:1px 1px 0px #ffffff;
-}
-
-.start-ai-button:hover, .reset-button:hover {
-    background-color:#e9e9e9;
-}
-
-.start-ai-button:active, .reset-button:active {
-     position:relative;
-     top:1px;
- }
-
-.start-ai-button{
-    margin-top: 15px;
-}
-
-.reset-button{
-    margin-top: 10px;
-}
-
-.footer
-{
-    font-family: Verdana;
-    color:#000000;
-    font-size: 12px;
-}
-
-.fb-like {
-    vertical-align: top;
-}
-.fb_iframe_widget span {
-    vertical-align: text-top !important;
+.next-container::before {
+  content: "Next Piece";
+  width: 100%;
+  float: right;
+  color: #bbbbbb;
+  font-size: 1em;
+  font-weight: normal;
 }

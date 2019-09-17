@@ -36,7 +36,27 @@ export default function GameManager() {
     gridContext.save();
 
     // Clear
-    gridContext.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+    gridContext.fillStyle = "#000000";
+    gridContext.fillRect(0, 0, gridCanvas.width, gridCanvas.height);
+
+    // Scale
+    const scale = Math.min(gridCanvas.height / 400, gridCanvas.width / 200);
+    gridContext.scale(scale, scale);
+
+    // Draw grid lines
+    gridContext.strokeStyle = "#808080";
+    for (r = 0; r < grid.rows; r++) {
+      gridContext.beginPath();
+      gridContext.moveTo(0, 20 * r);
+      gridContext.lineTo(400, 20 * r);
+      gridContext.stroke();
+    }
+    for (c = 0; c < grid.columns; c++) {
+      gridContext.beginPath();
+      gridContext.moveTo(20 * c, 0);
+      gridContext.lineTo(20 * c, 400);
+      gridContext.stroke();
+    }
 
     // Draw grid
     for (var r = 2; r < grid.rows; r++) {
@@ -44,7 +64,7 @@ export default function GameManager() {
         if (grid.cells[r][c] != 0) {
           gridContext.fillStyle = intToRGBHexString(grid.cells[r][c]);
           gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
-          gridContext.strokeStyle = "#FFFFFF";
+          gridContext.strokeStyle = "#808080";
           gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
         }
       }
@@ -61,7 +81,7 @@ export default function GameManager() {
             20,
             20
           );
-          gridContext.strokeStyle = "#FFFFFF";
+          gridContext.strokeStyle = "#000000";
           gridContext.strokeRect(
             20 * (c + workingPiece.column),
             20 * (r + workingPiece.row - 2) + workingPieceVerticalOffset,
@@ -79,6 +99,9 @@ export default function GameManager() {
     nextContext.save();
 
     nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+    // Clear
+    gridContext.fillStyle = "#000000";
+    gridContext.fillRect(0, 0, gridCanvas.width, gridCanvas.height);
     var next = workingPieces[1];
     var xOffset =
       next.dimension == 2
@@ -161,6 +184,7 @@ export default function GameManager() {
     redrawNextCanvas();
 
     choices = ai.choices(grid, workingPieces);
+    choicesIndex = Math.random() >= 0.5 ? 0 : 1;
     workingPiece = choices[choicesIndex];
     showWorkingPiece();
   }
@@ -195,7 +219,6 @@ export default function GameManager() {
   startTurn();
 
   document.addEventListener("keydown", e => {
-    console.log("down", e);
     if (e.repeat) return;
     if (!keyboardEnabled) return;
     if (e.key == "ArrowRight") {
