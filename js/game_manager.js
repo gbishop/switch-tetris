@@ -159,7 +159,6 @@ export default function GameManager() {
     var choices = [];
     var choicesIndex = 0;
     function nextChoice() {
-        console.log("nc", state);
         switch (state) {
             case State.dropping:
                 return;
@@ -248,7 +247,6 @@ export default function GameManager() {
         // ignore key repeats
         if (e.repeat)
             return;
-        console.log(e);
         if (e.key == "ArrowRight" || e.key == " ") {
             nextChoice();
         }
