@@ -1,12 +1,10 @@
 import Grid from "./grid.js";
 
 export default class Piece {
-  public cells: number[][];
   public dimension: number;
   public row = 0;
   public column = 0;
-  constructor(cells: number[][]) {
-    this.cells = cells;
+  constructor(public cells: number[][], public rotations: number) {
     this.dimension = cells.length;
   }
 
@@ -14,42 +12,42 @@ export default class Piece {
     var piece;
     switch (index) {
       case 0: // O
-        piece = new Piece([[0x0000aa, 0x0000aa], [0x0000aa, 0x0000aa]]);
+        piece = new Piece([[0x0000aa, 0x0000aa], [0x0000aa, 0x0000aa]], 1);
         break;
       case 1: // J
         piece = new Piece([
           [0xc0c0c0, 0x000000, 0x000000],
           [0xc0c0c0, 0xc0c0c0, 0xc0c0c0],
           [0x000000, 0x000000, 0x000000]
-        ]);
+        ], 4);
         break;
       case 2: // L
         piece = new Piece([
           [0x000000, 0x000000, 0xaa00aa],
           [0xaa00aa, 0xaa00aa, 0xaa00aa],
           [0x000000, 0x000000, 0x000000]
-        ]);
+        ], 4);
         break;
       case 3: // Z
         piece = new Piece([
           [0x00aaaa, 0x00aaaa, 0x000000],
           [0x000000, 0x00aaaa, 0x00aaaa],
           [0x000000, 0x000000, 0x000000]
-        ]);
+        ], 4);
         break;
       case 4: // S
         piece = new Piece([
           [0x000000, 0x00aa00, 0x00aa00],
           [0x00aa00, 0x00aa00, 0x000000],
           [0x000000, 0x000000, 0x000000]
-        ]);
+        ], 4);
         break;
       case 5: // T
         piece = new Piece([
           [0x000000, 0xaa5500, 0x000000],
           [0xaa5500, 0xaa5500, 0xaa5500],
           [0x000000, 0x000000, 0x000000]
-        ]);
+        ], 4);
         break;
       case 6: // I
         piece = new Piece([
@@ -57,7 +55,7 @@ export default class Piece {
           [0xaa0000, 0xaa0000, 0xaa0000, 0xaa0000],
           [0x000000, 0x000000, 0x000000, 0x000000],
           [0x000000, 0x000000, 0x000000, 0x000000]
-        ]);
+        ], 2);
         break;
     }
     piece.row = 0;
@@ -74,7 +72,7 @@ export default class Piece {
       }
     }
 
-    var piece = new Piece(_cells);
+    var piece = new Piece(_cells, this.rotations);
     piece.row = this.row;
     piece.column = this.column;
     return piece;

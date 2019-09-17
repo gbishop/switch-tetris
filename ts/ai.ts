@@ -22,7 +22,7 @@ export default class AI {
     let scoredPieces: ScoredPiece[] = [];
     var workingPiece = workingPieces[workingPieceIndex];
 
-    for (var rotation = 0; rotation < 4; rotation++) {
+    for (var rotation = 0; rotation < workingPiece.rotations; rotation++) {
       var piece = workingPiece.clone();
       for (var i = 0; i < rotation; i++) {
         piece.rotate(grid);
