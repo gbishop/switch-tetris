@@ -3,7 +3,7 @@ body {
   --fg-color: white;
   --available-height: calc(100vh - 16px);
   background-color: var(--bg-color);
-  margin: 8px;
+  margin: 8px 0px;
   /*font-size:calc([minimumsize]+([maximumsize]-[minimumsize])*((100vw-[minimumviewportwidth])/([maximumviewportwidth]-[minimumviewportwidth])))*/
 
   font-size: calc(16px + (64 - 16) * ((100vmin - 800px) / (1980 - 800)));
