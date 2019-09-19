@@ -9,7 +9,7 @@ body {
   font-size: calc(16px + (64 - 16) * ((100vmin - 800px) / (1980 - 800)));
 }
 
-.container {
+#play {
   margin: 0 auto;
 }
 
@@ -29,9 +29,6 @@ body {
   background-color: var(--bg-color);
   box-shadow: 0 0 10px 2px #eeeeee;
   border: 1px solid #cccccc;
-}
-
-.next-canvas {
 }
 
 .controls-container {
@@ -92,15 +89,15 @@ button#next {
   height: var(--available-height);
 }
 
-div.intro {
+div#intro {
   display: none;
   color: var(--fg-color);
 }
 
-body.intro div.intro {
-  display: block;
+div#play {
+  display: none;
 }
 
-body.intro div.container {
-  display: none;
+:target {
+  display: block !important;
 }

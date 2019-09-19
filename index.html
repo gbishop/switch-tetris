@@ -5,9 +5,9 @@
     <title>Switch Tetris</title>
     <link href="style/main.css" rel="stylesheet" type="text/css" />
   </head>
-  <body class="intro">
+  <body>
     <button id="next">Next</button>
-    <div class="intro">
+    <div id="intro">
       <h1>Play Tetris With Switches</h1>
       <p>Configure your switch interface to use Space/Enter or Right/Left.</p>
       <p>
@@ -24,7 +24,7 @@
       </p>
       <p>Hit any key to continue.</p>
     </div>
-    <div class="container">
+    <div id="play">
       <button id="drop">Drop</button>
       <div class="game-container">
         <canvas
@@ -54,6 +54,9 @@
     <script type="module">
       import tuner from "./js/tuner.js";
       import GameManager from "./js/game_manager.js";
+      if (!location.hash) {
+        location.hash = "#intro";
+      }
       var manager = new GameManager();
     </script>
   </body>
