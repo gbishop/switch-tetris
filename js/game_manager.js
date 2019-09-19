@@ -23,7 +23,7 @@ export default function GameManager() {
     var score = 0;
     let state = State.intro;
     function startPlaying() {
-        document.body.classList.remove("intro");
+        location.hash = "#play";
         grid = new Grid(22, 10);
         rpg = new RandomPieceGenerator();
         workingPieces = [null, rpg.nextPiece()];
@@ -259,4 +259,10 @@ export default function GameManager() {
     });
     document.getElementById("drop").addEventListener("click", finishTurn);
     document.getElementById("next").addEventListener("click", nextChoice);
+    if (!location.hash) {
+        location.hash = "#intro";
+    }
+    else if (location.hash == "#play") {
+        startPlaying();
+    }
 }
