@@ -53,10 +53,8 @@
 
     <script type="module">
       import tuner from "./js/tuner.js";
+      window.tuner = tuner;
       import GameManager from "./js/game_manager.js";
-      if (!location.hash) {
-        location.hash = "#intro";
-      }
       var manager = new GameManager();
     </script>
   </body>

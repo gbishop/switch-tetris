@@ -308,4 +308,10 @@ export default function GameManager() {
 
   document.getElementById("drop").addEventListener("click", finishTurn);
   document.getElementById("next").addEventListener("click", nextChoice);
+
+  if (!location.hash) {
+    location.hash = "#intro";
+  } else if (location.hash == "#play") {
+    startPlaying();
+  }
 }
