@@ -262,11 +262,11 @@ export default function GameManager() {
     // Clear lines
     const cleared = grid.clearLines();
     if (cleared) {
-      play("clearSound");
+      play("clear");
     } else {
-      play("fallSound");
+      play("fall");
     }
-    score += 10 ** cleared;
+    score += 1 + 10 * cleared;
 
     // Refresh graphics
     redrawGridCanvas();

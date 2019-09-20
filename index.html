@@ -46,14 +46,17 @@
         </div>
       </div>
     </div>
-    <audio id="fallSound" src="sounds/fall.wav"></audio>
-    <audio id="clearSound" src="sounds/clear.wav"></audio>
-    <audio id="selectionSound" volume="0.1" src="sounds/selection.wav"></audio>
-    <audio id="gameoverSound" src="sounds/gameover.wav"></audio>
+    <audio id="fallSound" src="sounds/fall.wav" preload="auto"></audio>
+    <audio id="clearSound" src="sounds/clear.wav" preload="auto"></audio>
+    <audio
+      id="selectionSound"
+      volume="0.1"
+      src="sounds/selection.wav"
+      preload="auto"
+    ></audio>
+    <audio id="gameoverSound" src="sounds/gameover.wav" preload="auto"></audio>
 
     <script type="module">
-      import tuner from "./js/tuner.js";
-      window.tuner = tuner;
       import GameManager from "./js/game_manager.js";
       var manager = new GameManager();
     </script>
