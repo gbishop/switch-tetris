@@ -39,7 +39,7 @@ export default function GameManager() {
 
   // Sound
   function play(sound: string): void {
-    const ae = <HTMLAudioElement>document.getElementById(sound);
+    const ae = <HTMLAudioElement>document.getElementById(sound + "Sound");
     if (ae) {
       ae.play();
     }
@@ -207,7 +207,7 @@ export default function GameManager() {
         startPlaying();
         return;
       case State.choosing:
-        play("selectionSound");
+        play("selection");
         choicesIndex = (choicesIndex + 1) % choices.length;
         workingPiece = choices[choicesIndex];
         showWorkingPiece();
@@ -276,7 +276,7 @@ export default function GameManager() {
   }
 
   function gameOver() {
-    play("gameoverSound");
+    play("gameover");
     state = State.endOfGame;
     gridContext.save();
     gridContext.translate(180, 400);
