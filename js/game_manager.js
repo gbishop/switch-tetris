@@ -17,7 +17,7 @@ export default function GameManager() {
     })(State || (State = {}));
     var grid;
     var rpg;
-    var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
+    var ai = new AI(0.517, 0.478, 0.675, 0.22);
     var workingPieces;
     var workingPiece = null;
     var score = 0;
@@ -34,7 +34,7 @@ export default function GameManager() {
     }
     // Sound
     function play(sound) {
-        const ae = document.getElementById(sound);
+        const ae = document.getElementById(sound + "Sound");
         if (ae) {
             ae.play();
         }
@@ -167,7 +167,7 @@ export default function GameManager() {
                 startPlaying();
                 return;
             case State.choosing:
-                play("selectionSound");
+                play("selection");
                 choicesIndex = (choicesIndex + 1) % choices.length;
                 workingPiece = choices[choicesIndex];
                 showWorkingPiece();
@@ -217,19 +217,19 @@ export default function GameManager() {
         // Clear lines
         const cleared = grid.clearLines();
         if (cleared) {
-            play("clearSound");
+            play("clear");
         }
         else {
-            play("fallSound");
+            play("fall");
         }
-        score += 10 ** cleared;
+        score += 1 + 10 * cleared;
         // Refresh graphics
         redrawGridCanvas();
         updateScoreContainer();
         return !grid.exceeded();
     }
     function gameOver() {
-        play("gameoverSound");
+        play("gameover");
         state = State.endOfGame;
         gridContext.save();
         gridContext.translate(180, 400);
