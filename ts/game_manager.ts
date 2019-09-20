@@ -20,7 +20,7 @@ export default function GameManager() {
 
   var grid: Grid;
   var rpg: RandomPieceGenerator;
-  var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
+  var ai = new AI(0.517, 0.478, 0.675, 0.22);
   var workingPieces: Piece[];
   var workingPiece: Piece = null;
   var score = 0;
