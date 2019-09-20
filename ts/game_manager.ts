@@ -20,7 +20,7 @@ export default function GameManager() {
 
   var grid: Grid;
   var rpg: RandomPieceGenerator;
-  var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
+  var ai = new AI(0.517, 0.478, 0.675, 0.22);
   var workingPieces: Piece[];
   var workingPiece: Piece = null;
   var score = 0;
@@ -39,7 +39,7 @@ export default function GameManager() {
 
   // Sound
   function play(sound: string): void {
-    const ae = <HTMLAudioElement>document.getElementById(sound);
+    const ae = <HTMLAudioElement>document.getElementById(sound + "Sound");
     if (ae) {
       ae.play();
     }
@@ -206,7 +206,7 @@ export default function GameManager() {
         startPlaying();
         return;
       case State.choosing:
-        play("selectionSound");
+        play("selection");
         choicesIndex = (choicesIndex + 1) % choices.length;
         workingPiece = choices[choicesIndex];
         showWorkingPiece();
@@ -261,11 +261,11 @@ export default function GameManager() {
     // Clear lines
     const cleared = grid.clearLines();
     if (cleared) {
-      play("clearSound");
+      play("clear");
     } else {
-      play("fallSound");
+      play("fall");
     }
-    score += 10 ** cleared;
+    score += 1 + 10 * cleared;
 
     // Refresh graphics
     redrawGridCanvas();
@@ -275,7 +275,7 @@ export default function GameManager() {
   }
 
   function gameOver() {
-    play("gameoverSound");
+    play("gameover");
     state = State.endOfGame;
     gridContext.save();
     gridContext.translate(180, 400);

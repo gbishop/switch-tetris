@@ -2,6 +2,23 @@ import AI from "./ai.js";
 import Grid from "./grid.js";
 import RandomPieceGenerator from "./random_piece_generator.js";
 
+/*
+        P = Population size = 100
+        R = Rounds per candidate = 10
+        M = Max moves per round = 200
+        S = Score per line cleared
+        D = Score per piece dropped
+        Theoretical fitness limit = (D*M + S*M*4/10)
+    */
+
+const PopulationSize = 100;
+const RoundsPerCandidate = 10;
+const MaxMovesPerRound = 1000;
+const ScorePerLineCleared = 10;
+const ScorePerPieceDropped = 1;
+const FitnessLimit =
+  MaxMovesPerRound * (ScorePerPieceDropped + (ScorePerLineCleared * 4) / 10);
+
 function randomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
@@ -15,7 +32,7 @@ interface Candidate {
 }
 
 function normalize(candidate: Candidate) {
-  var norm = Math.sqrt(
+  let norm = Math.sqrt(
     candidate.heightWeight * candidate.heightWeight +
       candidate.linesWeight * candidate.linesWeight +
       candidate.holesWeight * candidate.holesWeight +
@@ -28,7 +45,7 @@ function normalize(candidate: Candidate) {
 }
 
 function generateRandomCandidate() {
-  var candidate: Candidate = {
+  let candidate: Candidate = {
     heightWeight: Math.random() - 0.5,
     linesWeight: Math.random() - 0.5,
     holesWeight: Math.random() - 0.5,
@@ -49,28 +66,31 @@ function computeFitnesses(
   numberOfGames: number,
   maxNumberOfMoves: number
 ) {
-  for (var i = 0; i < candidates.length; i++) {
-    var candidate = candidates[i];
-    var ai = new AI(
+  for (let i = 0; i < candidates.length; i++) {
+    const candidate = candidates[i];
+    const ai = new AI(
       candidate.heightWeight,
       candidate.linesWeight,
       candidate.holesWeight,
       candidate.bumpinessWeight
     );
-    var totalScore = 0;
-    for (var j = 0; j < numberOfGames; j++) {
-      var grid = new Grid(22, 10);
-      var rpg = new RandomPieceGenerator();
-      var workingPieces = [rpg.nextPiece(), rpg.nextPiece()];
-      var workingPiece = workingPieces[0];
-      var score = 0;
-      var numberOfMoves = 0;
-      while (numberOfMoves++ < maxNumberOfMoves && !grid.exceeded()) {
+    let totalScore = 0;
+    for (let j = 0; j < numberOfGames; j++) {
+      const grid = new Grid(22, 10);
+      const rpg = new RandomPieceGenerator();
+      const workingPieces = [rpg.nextPiece(), rpg.nextPiece()];
+      let workingPiece = workingPieces[0];
+      let score = 0;
+      for (
+        let numberOfMoves = 0;
+        numberOfMoves < maxNumberOfMoves && !grid.exceeded();
+        numberOfMoves++
+      ) {
         workingPiece = ai.best(grid, workingPieces);
         while (workingPiece.moveDown(grid));
         grid.addPiece(workingPiece);
-        score += grid.clearLines();
-        for (var k = 0; k < workingPieces.length - 1; k++) {
+        score += ScorePerLineCleared * grid.clearLines() + ScorePerPieceDropped;
+        for (let k = 0; k < workingPieces.length - 1; k++) {
           workingPieces[k] = workingPieces[k + 1];
         }
         workingPieces[workingPieces.length - 1] = rpg.nextPiece();
@@ -78,13 +98,13 @@ function computeFitnesses(
       }
       totalScore += score;
     }
-    candidate.fitness = totalScore;
+    candidate.fitness = totalScore / numberOfGames;
   }
 }
 
 function tournamentSelectPair(candidates: Candidate[], ways: number) {
-  var indices = [];
-  for (var i = 0; i < candidates.length; i++) {
+  let indices = [];
+  for (let i = 0; i < candidates.length; i++) {
     indices.push(i);
   }
 
@@ -94,10 +114,10 @@ function tournamentSelectPair(candidates: Candidate[], ways: number) {
             Hence it suffices to pick the least 2 indexes out of the random
             ones picked.
         */
-  var fittestCandidateIndex1 = null;
-  var fittestCanddiateIndex2 = null;
-  for (var i = 0; i < ways; i++) {
-    var selectedIndex = indices.splice(randomInteger(0, indices.length), 1)[0];
+  let fittestCandidateIndex1 = null;
+  let fittestCanddiateIndex2 = null;
+  for (let i = 0; i < ways; i++) {
+    let selectedIndex = indices.splice(randomInteger(0, indices.length), 1)[0];
     if (
       fittestCandidateIndex1 === null ||
       selectedIndex < fittestCandidateIndex1
@@ -118,7 +138,7 @@ function tournamentSelectPair(candidates: Candidate[], ways: number) {
 }
 
 function crossOver(candidate1: Candidate, candidate2: Candidate) {
-  var candidate = {
+  let candidate = {
     heightWeight:
       candidate1.fitness * candidate1.heightWeight +
       candidate2.fitness * candidate2.heightWeight,
@@ -137,7 +157,7 @@ function crossOver(candidate1: Candidate, candidate2: Candidate) {
 }
 
 function mutate(candidate: Candidate) {
-  var quantity = Math.random() * 0.4 - 0.2; // plus/minus 0.2
+  let quantity = Math.random() * 0.4 - 0.2; // plus/minus 0.2
   switch (randomInteger(0, 4)) {
     case 0:
       candidate.heightWeight += quantity;
@@ -159,38 +179,34 @@ function deleteNLastReplacement(
   newCandidates: Candidate[]
 ) {
   candidates.splice(-newCandidates.length);
-  for (var i = 0; i < newCandidates.length; i++) {
+  for (let i = 0; i < newCandidates.length; i++) {
     candidates.push(newCandidates[i]);
   }
   sort(candidates);
 }
 
-/*
-        Population size = 100
-        Rounds per candidate = 5
-        Max moves per round = 200
-        Theoretical fitness limit = 5 * 200 * 4 / 10 = 400
-    */
 export default function tune() {
-  var candidates = [];
+  let candidates = [];
 
   // Initial population generation
-  for (var i = 0; i < 100; i++) {
+  for (let i = 0; i < PopulationSize; i++) {
     candidates.push(generateRandomCandidate());
   }
 
   console.log("Computing fitnesses of initial population...");
-  computeFitnesses(candidates, 5, 200);
+  computeFitnesses(candidates, RoundsPerCandidate, MaxMovesPerRound);
   sort(candidates);
 
-  var count = 0;
+  let count = 0;
+  const P30 = 0.3 * PopulationSize;
+  const P10 = 0.1 * PopulationSize;
   while (true) {
-    var newCandidates = [];
-    for (var i = 0; i < 30; i++) {
+    let newCandidates = [];
+    for (let i = 0; i < P30; i++) {
       // 30% of population
-      var pair = tournamentSelectPair(candidates, 10); // 10% of population
+      let pair = tournamentSelectPair(candidates, P10); // 10% of population
       //console.log('fitnesses = ' + pair[0].fitness + ',' + pair[1].fitness);
-      var candidate = crossOver(pair[0], pair[1]);
+      let candidate = crossOver(pair[0], pair[1]);
       if (Math.random() < 0.05) {
         // 5% chance of mutation
         mutate(candidate);
@@ -199,19 +215,30 @@ export default function tune() {
       newCandidates.push(candidate);
     }
     console.log("Computing fitnesses of new candidates. (" + count + ")");
-    computeFitnesses(newCandidates, 5, 200);
+    computeFitnesses(newCandidates, RoundsPerCandidate, MaxMovesPerRound);
     deleteNLastReplacement(candidates, newCandidates);
-    var totalFitness = 0;
-    for (var i = 0; i < candidates.length; i++) {
+    let totalFitness = 0;
+    for (let i = 0; i < candidates.length; i++) {
       totalFitness += candidates[i].fitness;
     }
-    console.log("Average fitness = " + totalFitness / candidates.length);
     console.log(
-      "Highest fitness = " + candidates[0].fitness + "(" + count + ")"
+      "Average fitness =",
+      totalFitness / candidates.length / FitnessLimit
     );
+    console.log("Highest fitness =", candidates[0].fitness / FitnessLimit);
     console.log(
       "Fittest candidate = " + JSON.stringify(candidates[0]) + "(" + count + ")"
     );
     count++;
+
+    if (count % 4 == 0) {
+      // recompute every fitness
+      console.log("Recompute");
+      computeFitnesses(candidates, RoundsPerCandidate, MaxMovesPerRound);
+      sort(candidates);
+      console.log("Highest fitness =", candidates[0].fitness / FitnessLimit);
+    }
   }
 }
+
+tune();
