@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "esm": "^3.2.25"
+  }
+}
