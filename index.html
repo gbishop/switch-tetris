@@ -5,9 +5,9 @@
     <title>Switch Tetris</title>
     <link href="style/main.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
-    <button id="next">Next</button>
-    <div id="intro">
+  <body class="row">
+    <button id="drop" class="col">Drop</button>
+    <div id="intro" class="row">
       <h1>Play Tetris With Switches</h1>
       <p>Configure your switch interface to use Space/Enter or Right/Left.</p>
       <p>
@@ -24,8 +24,7 @@
       </p>
       <p>Hit any key to continue.</p>
     </div>
-    <div id="play">
-      <button id="drop">Drop</button>
+    <div id="play" class="col">
       <div class="game-container">
         <canvas
           width="400px"
@@ -46,6 +45,7 @@
         </div>
       </div>
     </div>
+    <button id="next" class="col">Next</button>
     <audio id="fallSound" src="sounds/fall.wav" preload="auto"></audio>
     <audio id="clearSound" src="sounds/clear.wav" preload="auto"></audio>
     <audio
