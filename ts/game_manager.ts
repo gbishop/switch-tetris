@@ -306,6 +306,16 @@ export default function GameManager() {
   document.getElementById("drop").addEventListener("click", finishTurn);
   document.getElementById("next").addEventListener("click", nextChoice);
 
+  document.getElementById("buttonSize").addEventListener("change", e => {
+    const size = e.target as HTMLSelectElement;
+    // clear old value
+    Array.from(size.querySelectorAll("option")).map(option =>
+      document.body.classList.remove(option.value)
+    );
+    // add the new one
+    document.body.classList.add(size.value);
+  });
+
   if (!location.hash) {
     location.hash = "#intro";
   } else if (location.hash == "#play") {

@@ -5,24 +5,34 @@
     <title>Switch Tetris</title>
     <link href="style/main.css" rel="stylesheet" type="text/css" />
   </head>
-  <body class="row">
+  <body class="row buttonsSmall">
     <button id="drop" class="col">Drop</button>
-    <div id="intro" class="row">
-      <h1>Play Tetris With Switches</h1>
-      <p>Configure your switch interface to use Space/Enter or Right/Left.</p>
-      <p>
-        Choose your move with Space, Right Arrow, or by clicking the Next button
-        on the right side of the screen.
-      </p>
-      <p>
-        Drop the piece with Enter, Left Arrow, or by clicking the Drop button on
-        the left side of the screen.
-      </p>
-      <p>
-        The computer is offering the best and worst move on each turn. Learn to
-        distinguish them to get a high score.
-      </p>
-      <p>Hit any key to continue.</p>
+    <div id="intro" class="col">
+      <div>
+        <h1>Play Tetris With Switches</h1>
+        <p>Configure your switch interface to use Space/Enter or Right/Left.</p>
+        <p>
+          Choose your move with Space, Right Arrow, or by clicking the Next
+          button on the right side of the screen.
+        </p>
+        <p>
+          Drop the piece with Enter, Left Arrow, or by clicking the Drop button
+          on the left side of the screen.
+        </p>
+        <p>
+          The computer is offering the best and worst move on each turn. Learn
+          to distinguish them to get a high score.
+        </p>
+        <label
+          >Button Size:
+          <select id="buttonSize">
+            <option value="buttonsSmall">Small</option>
+            <option value="buttonsLarge">Large</option>
+            <option value="buttonsNone">None</option>
+          </select></label
+        >
+        <p>Hit any key to continue.</p>
+      </div>
     </div>
     <div id="play" class="col">
       <div class="game-container">
