@@ -92,6 +92,18 @@ body {
   font-weight: normal;
 }
 
+body.buttonsSmall button {
+  flex: 0;
+}
+
+body.buttonsLarge button {
+  flex: 1;
+}
+
+body.buttonsNone button {
+  display: none;
+}
+
 button {
   text-align: center;
   justify-content: center;
