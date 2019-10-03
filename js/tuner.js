@@ -10,11 +10,11 @@ import RandomPieceGenerator from "./random_piece_generator.js";
         Theoretical fitness limit = (D*M + S*M*4/10)
     */
 const PopulationSize = 100;
-const RoundsPerCandidate = 10;
-const MaxMovesPerRound = 1000;
+const RoundsPerCandidate = 5;
+const MaxMovesPerRound = 100;
 const ScorePerLineCleared = 10;
 const ScorePerPieceDropped = 1;
-const FitnessLimit = MaxMovesPerRound * (ScorePerPieceDropped + (ScorePerLineCleared * 4) / 10);
+const FitnessLimit = ScorePerPieceDropped + (ScorePerLineCleared * 4) / 10;
 function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
@@ -68,7 +68,7 @@ function computeFitnesses(candidates, numberOfGames, maxNumberOfMoves) {
             }
             totalScore += score;
         }
-        candidate.fitness = totalScore / numberOfGames;
+        candidate.fitness = totalScore / (numberOfGames * MaxMovesPerRound);
     }
 }
 function tournamentSelectPair(candidates, ways) {
@@ -176,13 +176,6 @@ export default function tune() {
         console.log("Highest fitness =", candidates[0].fitness / FitnessLimit);
         console.log("Fittest candidate = " + JSON.stringify(candidates[0]) + "(" + count + ")");
         count++;
-        if (count % 4 == 0) {
-            // recompute every fitness
-            console.log("Recompute");
-            computeFitnesses(candidates, RoundsPerCandidate, MaxMovesPerRound);
-            sort(candidates);
-            console.log("Highest fitness =", candidates[0].fitness / FitnessLimit);
-        }
     }
 }
 tune();

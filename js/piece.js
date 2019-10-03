@@ -31,14 +31,14 @@ export default class Piece {
                     [0x00aaaa, 0x00aaaa, 0x000000],
                     [0x000000, 0x00aaaa, 0x00aaaa],
                     [0x000000, 0x000000, 0x000000]
-                ], 4);
+                ], 2);
                 break;
             case 4: // S
                 piece = new Piece([
                     [0x000000, 0x00aa00, 0x00aa00],
                     [0x00aa00, 0x00aa00, 0x000000],
                     [0x000000, 0x000000, 0x000000]
-                ], 4);
+                ], 2);
                 break;
             case 5: // T
                 piece = new Piece([
