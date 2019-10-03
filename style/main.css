@@ -1,3 +1,17 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
 body {
   --bg-color: black;
   --fg-color: white;
@@ -34,6 +48,7 @@ body {
 .controls-container {
   height: 100%;
   font-family: monospace;
+  margin-left: 1em;
 }
 
 .score-container {
@@ -77,21 +92,26 @@ body {
   font-weight: normal;
 }
 
+button {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+}
+
 button#drop {
-  display: block;
-  float: left;
-  height: var(--available-height);
+  margin-right: 0.5em;
 }
 
 button#next {
-  display: block;
-  float: right;
-  height: var(--available-height);
+  margin-left: 0.5em;
 }
 
 div#intro {
   display: none;
   color: var(--fg-color);
+  padding: 1em;
+  width: 60vw;
 }
 
 div#play {
@@ -99,5 +119,5 @@ div#play {
 }
 
 :target {
-  display: block !important;
+  display: flex !important;
 }
